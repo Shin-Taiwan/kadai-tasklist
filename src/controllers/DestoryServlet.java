@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -14,43 +13,36 @@ import models.Task;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class UpdateServlet
+ * Servlet implementation class DestoryServlet
  */
-@WebServlet("/update")
-public class UpdateServlet extends HttpServlet {
+@WebServlet("/destory")
+public class DestoryServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public UpdateServlet() {
+    public DestoryServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String _token = request.getParameter("_token");
-
         if(_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
-            Task t = em.find(Task.class, (Integer)(request.getSession().getAttribute("Task_id")));
 
-            String content = request.getParameter("content");
-            t.setContent(content);
-
-            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            t.setUpdated_at(currentTime);
+            Task t = em.find(Task.class,(Integer)(request.getSession().getAttribute("Task_id")));
 
             em.getTransaction().begin();
+            em.remove(t);
             em.getTransaction().commit();
             em.close();
 
-            request.getSession().removeAttribute("Task_id");
 
+            request.getSession().removeAttribute("Task_id");
 
             response.sendRedirect(request.getContextPath()+"/index");
         }
