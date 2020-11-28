@@ -49,7 +49,7 @@ public class CreateServlet extends HttpServlet {
             t.setUpdated_at(currentTime);
 
             String errors = Taskvalidator.validate(t);
-            if(!errors.equals(null)){
+            if(!errors.equals("")){
                 em.close();
 
                 request.setAttribute("_token", request.getSession().getId());
